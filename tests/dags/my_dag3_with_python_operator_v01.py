@@ -22,7 +22,7 @@ def get_name(ti):
     ti.xcom_push(key='last_name', value='song')
 
 with DAG(
-    dag_id="my_dag3_with_python_operator_v05",
+    dag_id="my_dag3_with_python_operator_v06",
     default_args=default_args,
     description="This is a my_dag3 that ssongman write",
     start_date=datetime(2022, 9, 16),
