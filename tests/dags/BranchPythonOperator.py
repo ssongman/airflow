@@ -6,6 +6,14 @@ from airflow.operators.python import BranchPythonOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.trigger_rule import TriggerRule
 
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'ssongman',
+    'retries': 5,
+    'retry_delay': timedelta(minutes=2)
+}
+
 def random_branch_path():
     from random import randint
 
@@ -32,7 +40,13 @@ def print_result(**kwargs):
 def end_seq():
     print("end")
 
-with DAG( **dag_args ) as dag:
+with DAG(    
+    dag_id="BranchPythonOperator_v1",
+    default_args=default_args,
+    description="This is a dag that ssongman write",
+    start_date=datetime(2022, 9, 16),
+    schedule_interval="@daily"
+) as dag:
     start = BashOperator(
         task_id='start',
         bash_command='echo "start!"',
