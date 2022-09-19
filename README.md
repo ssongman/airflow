@@ -4,7 +4,22 @@
 
 
 
-# 1. airflow install
+
+
+# 1. airflow service 설명
+
+- `airflow-scheduler` - The [scheduler](https://airflow.apache.org/docs/apache-airflow/stable/concepts/scheduler.html) monitors all tasks and DAGs, then triggers the task instances once their dependencies are complete.
+- `airflow-webserver` - The webserver is available at `http://localhost:8080`.
+- `airflow-worker` - The worker that executes the tasks given by the scheduler.
+- `airflow-init` - The initialization service.
+- `postgres` - The database.
+- `redis` - [The redis](https://redis.io/) - broker that forwards messages from scheduler to worker.
+
+
+
+
+
+# 2. airflow install
 
 
 
@@ -246,21 +261,6 @@ $ docker-compose down --volumes --rmi all
 rm -rf '<DIRECTORY>'
 
 ```
-
-
-
-
-
-
-
-# 2. airflow service 설명
-
-- `airflow-scheduler` - The [scheduler](https://airflow.apache.org/docs/apache-airflow/stable/concepts/scheduler.html) monitors all tasks and DAGs, then triggers the task instances once their dependencies are complete.
-- `airflow-webserver` - The webserver is available at `http://localhost:8080`.
-- `airflow-worker` - The worker that executes the tasks given by the scheduler.
-- `airflow-init` - The initialization service.
-- `postgres` - The database.
-- `redis` - [The redis](https://redis.io/) - broker that forwards messages from scheduler to worker.
 
 
 
