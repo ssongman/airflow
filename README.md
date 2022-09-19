@@ -104,6 +104,8 @@ $ kubectl -n airflow get secret --namespace "airflow" my-aireflow-airflow -o jso
 
 ```sh
 
+$ helm -n airflow ls
+
 $ helm -n airflow upgrade my-aireflow bitnami/airflow \
     --set auth.username=song \
     --set auth.password=songpass \
@@ -116,15 +118,38 @@ $ helm -n airflow upgrade my-aireflow bitnami/airflow \
     --set git.dags.repositories[0].name=REPO-IDENTIFIER
     --set git.dags.repositories[0].branch=master
     
---set airflow.cloneDagFilesFromGit.enabled=true 
---set airflow.cloneDagFilesFromGit.repository=REPOSITORY_URL  
---set airflow.cloneDagFilesFromGit.branch=master 
---set airflow.baseUrl=http://127.0.0.1:8080 
+    #--set airflow.cloneDagFilesFromGit.enabled=true 
+    #--set airflow.cloneDagFilesFromGit.repository=REPOSITORY_URL  
+    #--set airflow.cloneDagFilesFromGit.branch=master 
+    #--set airflow.baseUrl=http://127.0.0.1:8080 
 
+
+# git repository 주소 변경 - 20220919
+$ helm -n airflow upgrade my-aireflow bitnami/airflow \
+    --set auth.username=song \
+    --set auth.password=songpass \
+    --set ldap.enabled=false \
+    --set ingress.enabled=true \
+    --set ingress.ingressClassName="" \
+    --set ingress.annotationsio/ingress.provider=traefik \
+    --set ingress.hostname=airflow.211-253-28-14.nip.io \
+    --set git.dags.enabled=true \
+    --set git.dags.repositories[0].repository="https://github.com/ssongman/airflow.git" \
+    --set git.dags.repositories[0].branch="main" \
+    --set git.dags.repositories[0].name=my-dags \
+    --set git.dags.repositories[0].path="tests/dags"
     
-    
-   
+
+$ helm -n airflow ls
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+my-aireflow     airflow         6               2022-09-17 17:25:00.087948063 +0000 UTC deployed        airflow-13.1.5  2.3.4
+
+
+
+
 ```
+
+
 
 
 
@@ -365,8 +390,29 @@ $ helm -n airflow upgrade my-aireflow bitnami/airflow \
     --set git.dags.repositories[0].branch="main" \
     --set git.dags.repositories[0].name=my-dags \
     --set git.dags.repositories[0].path="tests/dags"
-   
-    
+
+
+# git repository 주소 변경 - 20220919
+$ helm -n airflow upgrade my-aireflow bitnami/airflow \
+    --set auth.username=song \
+    --set auth.password=songpass \
+    --set ldap.enabled=false \
+    --set ingress.enabled=true \
+    --set ingress.ingressClassName="" \
+    --set ingress.annotationsio/ingress.provider=traefik \
+    --set ingress.hostname=airflow.211-253-28-14.nip.io \
+    --set git.dags.enabled=true \
+    --set git.dags.repositories[0].repository="https://github.com/ssongman/airflow.git" \
+    --set git.dags.repositories[0].branch="main" \
+    --set git.dags.repositories[0].name=my-dags \
+    --set git.dags.repositories[0].path="tests/dags"
+
+
+$ helm -n airflow ls
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+my-aireflow     airflow         6               2022-09-17 17:25:00.087948063 +0000 UTC deployed        airflow-13.1.5  2.3.4
+
+
 ```
 
 
@@ -485,7 +531,7 @@ subjects:
 
 
 
-## 2) sample dag
+## 3) sample dag
 
 ### (1) kubernetes_pod
 
@@ -564,7 +610,7 @@ with DAG(
 
 ### (2) arguments
 
-
+- sample1
 
 ```python
 
@@ -588,6 +634,28 @@ pyspark_submit_sample = KubernetesPodOperator(
                                              message="Retry Task"),
     dag=dag
 )
+```
+
+
+
+- sample2
+
+```python
+
+    quay_k8s = KubernetesPodOperator(
+        namespace='default',
+        image='quay.io/apache/bash',
+        image_pull_secrets=[k8s.V1LocalObjectReference('testquay')],
+        cmds=["bash", "-cx"],
+        arguments=["echo", "10", "echo pwd"],
+        labels={"foo": "bar"},
+        name="airflow-private-image-pod",
+        is_delete_operator_pod=True,
+        in_cluster=True,
+        task_id="task-two",
+        get_logs=True,
+    )
+    
 ```
 
 
